@@ -1,0 +1,141 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Octopadia",
+    "description": "Octopadia",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/repos/list": {
+      "get": {
+        "tags": [
+          "octopadia"
+        ],
+        "description": "List pull requests",
+        "parameters": [
+          {
+            "description": "created_by",
+            "in": "query",
+            "name": "created_by",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "created_at",
+            "in": "query",
+            "name": "created_at",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "day",
+                "week",
+                "month"
+              ]
+            }
+          },
+          {
+            "description": "updated_at",
+            "in": "query",
+            "name": "updated_at",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "day",
+                "week",
+                "month"
+              ]
+            }
+          },
+          {
+            "description": "reviewer",
+            "in": "query",
+            "name": "reviewer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "number",
+                          "example": 1
+                        },
+                        "page_count": {
+                          "type": "number",
+                          "example": 1
+                        },
+                        "has_more": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "number",
+                                "example": 1733507044
+                              },
+                              "number": {
+                                "type": "number",
+                                "example": 11
+                              },
+                              "state": {
+                                "type": "string",
+                                "example": "open"
+                              },
+                              "repository_name": {
+                                "type": "string",
+                                "example": "octopadia"
+                              },
+                              "html_url": {
+                                "type": "string",
+                                "example": "https://github.com/realfabecker/octopadia/pull/2521"
+                              },
+                              "created_by": {
+                                "type": "string",
+                                "example": "realfabecker"
+                              },
+                              "created_at": {
+                                "type": "string",
+                                "example": "2024-02-19T11:35:46.000Z"
+                              },
+                              "updated_at": {
+                                "type": "string",
+                                "example": "2024-02-19T11:35:46.000Z"
+                              },
+                              "reviewers": {
+                                "type": "string",
+                                "example": "octodog"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,4 @@
 import Database from "libsql";
-import fs from "fs";
 
 export class DB {
   private db: Database.Database | null = null;
@@ -18,10 +17,6 @@ export class DB {
       authToken: this.token,
       timeout: 5,
     });
-    // if (fs.existsSync(this.p)) {
-    //   const stats = fs.statSync(this.p);
-    //   if ((stats.mtimeMs - Date.now()) / 1000 < 30) return true;
-    // }
     this.db.sync();
     this.ready = true;
   }
