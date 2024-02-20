@@ -20,7 +20,7 @@ const getQuery = (opts: {
 
 const getCount = (opts: {
   db: DB;
-  filters?: { created_by?: string, reviewer?:string };
+  filters?: { created_by?: string, reviewer?: string };
 }): number => {
   const { q, p } = getQuery({ filters: opts.filters });
   const query = `SELECT count(*) as c1
@@ -38,7 +38,7 @@ const getItems = (opts: {
   reviewer?: string;
 }) => {
   let { q: query, p: params } = getQuery({
-    filters: { created_by: opts.created_by, opts.reviewer},
+    filters: { created_by: opts.created_by, reviewer: opts.reviewer},
   });
   params.push(opts.limit, opts.offset);
   query += " LIMIT ? OFFSET ? ";
