@@ -38,7 +38,7 @@ const getItems = (opts: {
   reviewer?: string;
 }) => {
   let { q: query, p: params } = getQuery({
-    filters: { created_by: opts.created_by, reviewer},
+    filters: { created_by: opts.created_by, opts.reviewer},
   });
   params.push(opts.limit, opts.offset);
   query += " LIMIT ? OFFSET ? ";
