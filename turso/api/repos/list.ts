@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { DB } from "../../lib/db";
 
 const getQuery = (opts: {
-  filters?: { created_by?: string };
+  filters?: { created_by?: string, reviewer?:string };
 }): { q: string; p: any[] } => {
   let params = [];
   let query = "SELECT * FROM pull_request WHERE 1=1 ";
@@ -11,12 +11,16 @@ const getQuery = (opts: {
     query += "AND created_by = ?";
     params.push(opts.filters.created_by);
   }
+  if (opts?.filters?.reviewer) {
+    query += "AND UPPER(reviewer) like ?";
+    params.push(`%${opts.filters.reviewer.toUpperCase()}%`);
+  }
   return { q: query, p: params };
 };
 
 const getCount = (opts: {
   db: DB;
-  filters?: { created_by?: string };
+  filters?: { created_by?: string, reviewer?:string };
 }): number => {
   const { q, p } = getQuery({ filters: opts.filters });
   const query = `SELECT count(*) as c1
@@ -31,9 +35,10 @@ const getItems = (opts: {
   limit: number;
   offset: number;
   created_by?: string;
+  reviewer?: string;
 }) => {
   let { q: query, p: params } = getQuery({
-    filters: { created_by: opts.created_by },
+    filters: { created_by: opts.created_by, reviewer},
   });
   params.push(opts.limit, opts.offset);
   query += " LIMIT ? OFFSET ? ";
@@ -46,6 +51,7 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
       page = 1,
       limit = 10,
       created_by,
+      reviewer
     } = req.query as Record<string, any>;
 
     const db = new DB(
@@ -59,9 +65,10 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
       offset: page - 1,
       limit,
       created_by,
+      reviewer
     });
 
-    const total = getCount({ db, filters: { created_by } });
+    const total = getCount({ db, filters: { created_by, reviewer } });
     return res.json({
       data: {
         items: rows,
