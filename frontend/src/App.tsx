@@ -52,6 +52,7 @@ const PullGrid = () => {
       </div>
       <Stack className="container">
         <Button
+          size="lg"
           variant="secondary"
           onClick={handleClickNextPage}
           disabled={!data?.more || prLoading}
