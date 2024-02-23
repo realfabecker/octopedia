@@ -1,50 +1,69 @@
 import "./App.css";
 
 import { useContext } from "react";
-import { Card, Col, Row, Stack, Form } from "react-bootstrap";
+import { Card, Col, Row, Stack, Form, Button } from "react-bootstrap";
 
 import { FilterBy, FilterN, PeriodBy } from "./lib";
 import { PullsContext, PullsProvider } from "./context/PullsContext.tsx";
 
 const PullGrid = () => {
-  const { prData: data } = useContext(PullsContext);
+  const {
+    prLoading,
+    prData: data,
+    handleClickNextPage,
+  } = useContext(PullsContext);
   return (
-    <div id="pulls" className={"container"}>
-      {(data?.data?.items || []).map((pr: any) => (
-        <Card className="item" key={pr.id}>
-          <Card.Body>
-            <Stack gap={1}>
-              <a href={pr.html_url} target="_blank">
-                <p>
-                  Pull Number: #{pr.number} ({pr.state})
+    <>
+      <div id="pulls" className={"container"}>
+        {(data?.data || []).map((pr: any) => (
+          <Card className="item" key={pr.id}>
+            <Card.Body>
+              <Stack gap={1}>
+                <a href={pr.html_url} target="_blank">
+                  <p>
+                    Pull Number: #{pr.number} ({pr.state})
+                  </p>
+                </a>
+              </Stack>
+
+              <Stack gap={1}>
+                <p>Created By:</p>
+                <p style={{ fontSize: "1.2rem" }}>{pr.created_by}</p>
+              </Stack>
+
+              <Stack gap={1}>
+                <p>Created At:</p>
+                <p style={{ fontSize: "1.2rem" }}>
+                  {new Date(pr.created_at).toISOString().slice(0, 10)}
                 </p>
-              </a>
-            </Stack>
+              </Stack>
 
-            <Stack gap={1}>
-              <p>Created By:</p>
-              <p style={{ fontSize: "1.2rem" }}>{pr.created_by}</p>
-            </Stack>
-
-            <Stack gap={1}>
-              <p>Created At:</p>
-              <p style={{ fontSize: "1.2rem" }}>
-                {new Date(pr.created_at).toISOString().slice(0, 10)}
-              </p>
-            </Stack>
-
-            <Stack gap={1}>
-              <p>Reviewers:</p>
-              <ul style={{ fontSize: "1.2rem" }}>
-                {pr.reviewers.split(",").map((r: never) => (
-                  <li id={r}>{r}</li>
-                ))}
-              </ul>
-            </Stack>
-          </Card.Body>
-        </Card>
-      ))}
-    </div>
+              <Stack gap={1}>
+                <p>Reviewers:</p>
+                <ul style={{ fontSize: "1.2rem" }}>
+                  {pr.reviewers.split(",").map((r: never) => (
+                    <li key={r + Math.random() + ""}>{r}</li>
+                  ))}
+                </ul>
+              </Stack>
+            </Card.Body>
+          </Card>
+        ))}
+      </div>
+      <Stack className="container">
+        <Button
+          variant="secondary"
+          onClick={handleClickNextPage}
+          disabled={!data?.more || prLoading}
+        >
+          {prLoading
+            ? "Loading..."
+            : data?.more
+              ? "Load more..."
+              : "No more itens to load"}
+        </Button>
+      </Stack>
+    </>
   );
 };
 
@@ -98,6 +117,10 @@ const Header = () => {
   );
 };
 
+const Footer = () => {
+  return <footer></footer>;
+};
+
 function App() {
   return (
     <PullsProvider>
@@ -106,7 +129,7 @@ function App() {
         <main>
           <PullGrid />
         </main>
-        <footer />
+        <Footer />
       </div>
     </PullsProvider>
   );
