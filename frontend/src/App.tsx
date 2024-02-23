@@ -78,6 +78,7 @@ const Header = () => {
           <Form.Group as={Col} controlId="filterName">
             <Form.Label>Filter By</Form.Label>
             <Form.Select
+              size="lg"
               defaultValue={filterName}
               onChange={(e) => onChangeFilterName(e.target.value as FilterBy)}
             >
@@ -95,6 +96,7 @@ const Header = () => {
               filterName,
             ) && (
               <Form.Select
+                size="lg"
                 defaultValue={"choose"}
                 onChange={(e) =>
                   onChangeFilterValue(e.target.value as PeriodBy)
@@ -107,6 +109,7 @@ const Header = () => {
               </Form.Select>
             )) || (
               <Form.Control
+                size="lg"
                 onChange={(e) => onChangeFilterValue(e.target.value)}
               />
             )}
