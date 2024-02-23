@@ -88,6 +88,7 @@ const getItems = (opts: {
     filters: opts.filters,
   });
   params.push(opts.offset, opts.limit);
+  query += " ORDER BY created_at DESC";
   query += " LIMIT ?,? ";
   return opts.db.query(query, params as never[]);
 };
