@@ -1,17 +1,14 @@
 import "./App.css";
 
 import { useContext } from "react";
-import { Card, Col, Row, Stack, Form, Button } from "react-bootstrap";
+import { Button, Card, Col, Form, Row, Stack } from "react-bootstrap";
 
 import { FilterBy, FilterN, PeriodBy } from "./lib";
 import { PullsContext, PullsProvider } from "./context/PullsContext.tsx";
 
 const PullGrid = () => {
-  const {
-    prLoading,
-    prData: data,
-    handleClickNextPage,
-  } = useContext(PullsContext);
+  const { data, handleClickNextPage } = useContext(PullsContext);
+
   return (
     <>
       <div id="pulls" className={"container"}>
@@ -55,9 +52,9 @@ const PullGrid = () => {
           size="lg"
           variant="secondary"
           onClick={handleClickNextPage}
-          disabled={!data?.more || prLoading}
+          disabled={!data?.more || data.loading}
         >
-          {prLoading
+          {data.loading
             ? "Loading..."
             : data?.more
               ? "Load more..."
@@ -69,7 +66,7 @@ const PullGrid = () => {
 };
 
 const Header = () => {
-  const { onChangeFilterName, onChangeFilterValue, filterName } =
+  const { onChangeFilterName, onChangeFilterValue, params } =
     useContext(PullsContext);
 
   return (
@@ -80,9 +77,10 @@ const Header = () => {
             <Form.Label>Filter By</Form.Label>
             <Form.Select
               size="lg"
-              defaultValue={filterName}
+              defaultValue={params?.filterBy || FilterBy.CHOOOSE}
               onChange={(e) => onChangeFilterName(e.target.value as FilterBy)}
             >
+              <option value={"choose"}>Choose...</option>
               <option value={FilterBy.REVIEWER}>Reviewer</option>
               <option value={FilterBy.CREATED_BY}>Created By</option>
               <option value={FilterBy.CREATED_AT}>Created At</option>
@@ -91,10 +89,12 @@ const Header = () => {
           </Form.Group>
 
           <Form.Group as={Col} controlId="filterVal">
-            <Form.Label>{FilterN[filterName]}</Form.Label>
+            <Form.Label>
+              {FilterN[params.filterBy || FilterBy.CHOOOSE]}
+            </Form.Label>
 
             {([FilterBy.CREATED_AT, FilterBy.UPDATED_AT].includes(
-              filterName,
+              params?.filterBy,
             ) && (
               <Form.Select
                 size="lg"
@@ -111,6 +111,7 @@ const Header = () => {
             )) || (
               <Form.Control
                 size="lg"
+                disabled={params?.filterBy === FilterBy.CHOOOSE}
                 onChange={(e) => onChangeFilterValue(e.target.value)}
               />
             )}
