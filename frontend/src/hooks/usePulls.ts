@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FilterBy, PullData, PullParms, RepoHttpSender } from "../lib";
 import { useDebouncedCallback } from "./useDebouncedCallback.ts";
 
-export const usePulls = (debounce: number = 500) => {
+export const usePulls = (debounce: number = 300) => {
   const [params, setParams] = useState<PullParms>({
     filterBy: FilterBy.CHOOOSE,
     page: 1,
@@ -47,6 +47,8 @@ export const usePulls = (debounce: number = 500) => {
         if (!Array.isArray(json?.data?.items)) {
           throw new Error("unexpected return from pull request api");
         }
+
+        await new Promise((resolve) => setTimeout(() => resolve(true), 1000));
 
         setData((prevState) => ({
           ...prevState!,
