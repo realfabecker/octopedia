@@ -32,7 +32,7 @@ export type PagedDto<T = Record<string, any>> = {
 };
 
 export type PullParms = {
-  filterBy: FilterBy;
+  filterBy?: FilterBy;
   filterVal?: any;
   page: number;
   limit: number;

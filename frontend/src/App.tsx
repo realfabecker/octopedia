@@ -152,23 +152,24 @@ const Header = () => {
               {FilterN[params.filterBy || FilterBy.CHOOOSE]}
             </Form.Label>
 
-            {([FilterBy.CREATED_AT, FilterBy.UPDATED_AT].includes(
-              params?.filterBy,
-            ) && (
-              <Form.Select
-                size="lg"
-                style={{ height: "4.8rem" }}
-                defaultValue={"choose"}
-                onChange={(e) =>
-                  onChangeFilterValue(e.target.value as PeriodBy)
-                }
-              >
-                <option value={"choose"}>Choose...</option>
-                <option value={PeriodBy.TODAY}>Today</option>
-                <option value={PeriodBy.WEEK}>Week</option>
-                <option value={PeriodBy.MONTH}>Month</option>
-              </Form.Select>
-            )) || (
+            {(params.filterBy &&
+              [FilterBy.CREATED_AT, FilterBy.UPDATED_AT].includes(
+                params.filterBy,
+              ) && (
+                <Form.Select
+                  size="lg"
+                  style={{ height: "4.8rem" }}
+                  defaultValue={"choose"}
+                  onChange={(e) =>
+                    onChangeFilterValue(e.target.value as PeriodBy)
+                  }
+                >
+                  <option value={"choose"}>Choose...</option>
+                  <option value={PeriodBy.TODAY}>Today</option>
+                  <option value={PeriodBy.WEEK}>Week</option>
+                  <option value={PeriodBy.MONTH}>Month</option>
+                </Form.Select>
+              )) || (
               <Form.Control
                 size="lg"
                 style={{ height: "4.8rem" }}

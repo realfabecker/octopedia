@@ -1,13 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FilterBy, PullData, PullParms, RepoHttpSender } from "../lib";
 import { useDebouncedCallback } from "./useDebouncedCallback.ts";
 
 export const usePulls = (debounce: number = 300) => {
-  const [params, setParams] = useState<PullParms>({
-    filterBy: FilterBy.CHOOOSE,
-    page: 1,
-    limit: 6,
-  });
+  const [{ filterBy, filterVal, page, limit }, setParams] = useState<PullParms>(
+    {
+      filterBy: FilterBy.CHOOOSE,
+      page: 1,
+      limit: 6,
+    },
+  );
+
+  const fByRef = useRef<FilterBy>();
+  fByRef.current = filterBy;
 
   const [data, setData] = useState<PullData>({
     data: [],
@@ -43,7 +48,12 @@ export const usePulls = (debounce: number = 300) => {
         setData((prevState) => ({ ...prevState!, loading: true }));
 
         const sender = new RepoHttpSender();
-        const json = await sender.list(params);
+        const json = await sender.list({
+          filterBy: fByRef.current,
+          filterVal,
+          page,
+          limit,
+        });
         if (!Array.isArray(json?.data?.items)) {
           throw new Error("unexpected return from pull request api");
         }
@@ -53,7 +63,7 @@ export const usePulls = (debounce: number = 300) => {
         setData((prevState) => ({
           ...prevState!,
           data:
-            params.page === 1
+            page === 1
               ? json.data.items
               : [...(prevState?.data || []), ...(json?.data?.items || [])],
           more: json.data?.has_more || false,
@@ -68,11 +78,11 @@ export const usePulls = (debounce: number = 300) => {
         }));
       }
     })();
-  }, [params]);
+  }, [filterVal, page, limit]);
 
   return {
     data: data,
-    params: params,
+    params: { filterBy, filterVal, page, limit },
     onChangeFilterName,
     onChangeFilterValue,
     handleClickNextPage,
