@@ -14,31 +14,29 @@ import {
 import { FilterBy, FilterN, PeriodBy } from "./lib";
 import { PullsContext, PullsProvider } from "./context/PullsContext.tsx";
 
-const BlankCard = () => {
+const BlankCard = ({ sizes }: { sizes: number[] }) => {
+  const rand = () =>
+    sizes.sort(() => [-1, 0, 1][Math.floor(Math.random() * 3)]).pop();
   return (
     <Card className={"item"} style={{ height: "26.5rem" }}>
       <Card.Body>
         <Placeholder as={Card.Title} animation="glow">
           <Placeholder xs={6} size={"lg"} />
         </Placeholder>
-        <Placeholder as={Card.Text} animation="glow">
-          <p>
-            <Placeholder xs={8} />
-          </p>
-          <p>
-            <Placeholder xs={4} />
-          </p>
-          <p>
-            <Placeholder xs={8} />
-            <Placeholder xs={7} />
-          </p>
-          <p>
-            <Placeholder xs={4} />
-          </p>
-          <p>
-            <Placeholder xs={6} />
-            <Placeholder xs={7} />
-          </p>
+        <Placeholder animation="glow" style={{ lineHeight: "3rem" }}>
+          <Placeholder xs={rand()} />
+          <br />
+          <Placeholder xs={rand()} />
+          <br />
+          <Placeholder xs={rand()} />
+          <br />
+          <Placeholder xs={rand()} />
+          <br />
+          <Placeholder xs={rand()} />
+          <br />
+          <Placeholder xs={rand()} />
+          <br />
+          <Placeholder xs={rand()} />
         </Placeholder>
       </Card.Body>
     </Card>
@@ -46,6 +44,8 @@ const BlankCard = () => {
 };
 
 const PullCard = ({ pr }: { pr: any }) => {
+  const approvals = pr.approvals?.split(",") || [];
+
   return (
     <Card className="item" key={pr.id}>
       <Card.Body>
@@ -73,7 +73,14 @@ const PullCard = ({ pr }: { pr: any }) => {
           <p>Reviewers:</p>
           <ul style={{ fontSize: "1.2rem" }}>
             {pr.reviewers.split(",").map((r: never) => (
-              <li key={r + Math.random() + ""}>{r}</li>
+              <li key={r + Math.random() + ""}>
+                {r}
+                {approvals.includes(r) && (
+                  <span
+                    style={{ fontSize: "2rem", color: "green" }}
+                  >{`\u2713`}</span>
+                )}
+              </li>
             ))}
           </ul>
         </Stack>
@@ -99,11 +106,11 @@ const PullGrid = () => {
     <>
       <div id="pulls" className={"container"}>
         {(data?.data || []).map((pr: any) => (
-          <PullCard pr={pr} />
+          <PullCard pr={pr} key={pr.id} />
         ))}
         {data.loading &&
           Array.from({ length: getBlankCardsLen() }, () => (
-            <BlankCard key={Math.random()} />
+            <BlankCard key={Math.random()} sizes={[8, 2, 10, 5, 4, 6, 7]} />
           ))}
       </div>
       {data.more && (
